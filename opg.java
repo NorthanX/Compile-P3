@@ -79,7 +79,7 @@ public class opg {
                         break;
                 default:
                         System.out.println("E");
-                        break;
+                        return;
             }
 
             //进行真正的分析算法
