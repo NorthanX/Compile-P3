@@ -74,9 +74,12 @@ public class opg {
                             return;
                         }
                         break;
+                case '3':
+                case '4':
+                        break;
                 default:
-                    System.out.println("E");
-                    break;
+                        System.out.println("E");
+                        break;
             }
 
             //进行真正的分析算法
