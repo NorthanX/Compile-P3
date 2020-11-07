@@ -73,6 +73,10 @@ public class opg {
                             System.out.println("RE");
                             return;
                         }
+                        break;
+                default:
+                    System.out.println("E");
+                    break;
             }
 
             //进行真正的分析算法
