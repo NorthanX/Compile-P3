@@ -26,8 +26,8 @@ public class opg {
     static int location = 0;
 
     public static void main(String[] args) throws Exception{
-        //File file = new File(args[0]);
-        File file = new File("src/work.txt");
+        File file = new File(args[0]);
+        //File file = new File("src/work.txt");
         FileReader fReader = new FileReader(file);
         BufferedReader bReader = new BufferedReader(fReader);
         String sentence = "#"+bReader.readLine()+"#";
