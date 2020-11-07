@@ -20,25 +20,25 @@ public class opg {
             { 1, 1, 2, 2, 1, 1},
             {-1,-1,-1,-1, 0, 2},
             { 1, 1, 2, 2, 1, 1},
-            {-1,-1,-1,-1, 2, 0}
+            {-1,-1,-1,-1, 2,-2}
     };
 
     static int location = 0;
 
     public static void main(String[] args) throws Exception{
-        File file = new File(args[0]);
-        //File file = new File("src/work.txt");
+        //File file = new File(args[0]);
+        File file = new File("src/work.txt");
         FileReader fReader = new FileReader(file);
         BufferedReader bReader = new BufferedReader(fReader);
-        String sentence = "#"+bReader.readLine();
+        String sentence = "#"+bReader.readLine()+"#";
         bReader.close();
-        sentence.replace("/r/n","#");
-        sentence.replaceAll("\\+","0");
-        sentence.replaceAll("\\*","1");
-        sentence.replaceAll("i","2");
-        sentence.replaceAll("\\(","3");
-        sentence.replaceAll("\\)","4");
-        sentence.replaceAll("#","5");
+        sentence = sentence.replaceAll("\r|\n", "");
+        sentence = sentence.replaceAll("\\+","0");
+        sentence = sentence.replaceAll("\\*","1");
+        sentence = sentence.replaceAll("i","2");
+        sentence = sentence.replaceAll("\\(","3");
+        sentence = sentence.replaceAll("\\)","4");
+        sentence = sentence.replaceAll("#","5");
 
         Stack<Character> OPND = new Stack<Character>();//存运算数
         Stack<Character> OPTR = new Stack<Character>();//存运算符
@@ -58,18 +58,20 @@ public class opg {
                             System.out.println("E");
                             return;
                         }
+                        break;
                 case '0':
                 case '1': if (last_c=='0' || last_c=='1'){
                             System.out.println("E");
                             return;
                         }
+                        break;
             }
 
             //进行真正的分析算法
             switch (c){
                 case '2':
                     OPND.add(c);
-                    System.out.println("I"+c);
+                    printSymbol(c);
                     System.out.println("R");
                     last_c = c;
                     break;
@@ -77,78 +79,75 @@ public class opg {
                 case '1':
                 case '3':
                 case '4':
+                case '5':
                     //如果没有运算数的话
-                    if (OPND.empty()){
+                    if (OPND.empty() && !OPTR.empty()){
                         System.out.println("E");
                         return;
+                    }
+                    if (OPTR.empty()){
+                        last_c = c;
+                        OPTR.push(c);
+                        break;
                     }
                     //如果没有运算符的话
                     if (OPTR.size()==1){
                         OPTR.push(c);
-                        System.out.println("I"+c);
+                        printSymbol(c);
                         last_c = c;
                         break;
                     }
-                    //咱家里有运算符啦
+                    //咱家里有运算符!
                     else {
-                        while (true){
-                            char theta = OPTR.peek();
+                        char theta = OPTR.peek();
 
-                            //判断优先级
-                            int cmp = compare(theta,c);
+                        //判断优先级
+                        int cmp = compare(theta,c);
 
-                            //cmp==1， 即栈内大于栈外的运算符的时候，需要重复循环，其他的不需要
-                           if (cmp==1){
-                                if (OPND.size()<2){
-                                    System.out.println("RE");
-                                    return;
-                                }
-
-                                char E1 = OPND.pop();
-                                char E2 = OPND.pop();
-                                theta = OPTR.pop();
-                                boolean transfer = statue(E1, theta, E2);
-                                if (transfer){
-                                    last_c = E1;//规约后算式对的最后一个就是I了
-                                    OPND.push(E1);
-                                    OPTR.push(c);
-                                    System.out.println("I"+c);
-                                    System.out.println("R");
-                                }
-                                else {
-                                    System.out.println("RE");
-                                    return;
-                                }
+                        //cmp==1， 即栈内大于栈外的运算符的时候，需要重复循环，其他的不需要
+                        while (cmp==1){
+                            if (OPND.size()<2){
+                                System.out.println("RE");
+                                return;
                             }
-                           //这时只能是左括号和右括号
-                           else if (cmp == 0) {
-                               last_c = '2';//这时式子最右侧的还是运算数
-                               OPTR.pop();//把左括号扔出来
-                               System.out.println("I"+c);
-                               System.out.println("R");
-                               break;//这时循环需要结束！！！
-                           }
-                           else if (cmp == -1) {
-                               OPTR.push(c);
-                               System.out.println("I"+c);
-                               break;//这时循环需要结束！！！
-                           }
-                           //读入到一些奇怪的情况了诶
-                           else {
-                               System.out.println("E");
-                               return;
-                           }
+
+                            char E1 = OPND.pop();
+                            char E2 = OPND.pop();
+                            theta = OPTR.pop();
+                            boolean transfer = statue(E1, theta, E2);
+                            if (transfer){
+                                OPND.push(E1);
+                                System.out.println("R");
+                            }
+                            else {
+                                System.out.println("RE");
+                                return;
+                            }
+
+                            theta = OPTR.peek();
+                            cmp = compare(theta,c);
                         }
-                    }
-                    break;
-                case '5':
-                    if (OPTR.empty()){
-                        last_c = c;
-                        OPTR.push(c);
-                    }
-                    //这里应该是正常结束啦！
-                    else {
-                        return;
+                        //这时只能是左括号和右括号
+                        if (cmp == 0) {
+                            last_c = '2';//这时式子最右侧的还是运算数
+                            OPTR.pop();//把左括号扔出来
+                            printSymbol(c);
+                            System.out.println("R");
+                        }
+                        else if (cmp == -1) {
+                            OPTR.push(c);
+                            last_c = c;
+                            printSymbol(c);
+                        }
+                        //读到两个井号了！！！
+                        else if (cmp==-2){
+                            return;
+                        }
+                        //读入到一些奇怪的情况了诶
+                        else {
+                            System.out.println("E");
+                            return;
+                        }
                     }
                     break;
             }
@@ -179,5 +178,25 @@ public class opg {
             return true;
         }
         return false;
+    }
+
+    public static void printSymbol(char a){
+        switch (a){
+            case '0':
+                System.out.println("I+");
+                break;
+            case '1':
+                System.out.println("I*");
+                break;
+            case '2':
+                System.out.println("Ii");
+                break;
+            case '3':
+                System.out.println("I(");
+                break;
+            case '4':
+                System.out.println("I)");
+                break;
+        }
     }
 }
