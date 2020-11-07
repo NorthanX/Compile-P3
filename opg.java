@@ -81,6 +81,7 @@ public class opg {
                         break;
                 case '4': if (last_c!='2'){
                             System.out.println("E");
+                            return;
                         }
                         break;
                 default:
