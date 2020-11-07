@@ -92,7 +92,7 @@ public class opg {
             //进行真正的分析算法
 
             //如果没有运算数且是运算符的话
-            if (OPND.empty() && !OPTR.empty() && c!='2'){
+            if (OPND.empty() && !OPTR.empty() && c!='2' && c!='3'){
                 System.out.println("E");
                 return;
             }
