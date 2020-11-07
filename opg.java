@@ -64,7 +64,9 @@ public class opg {
                         }
                         break;
                 case '0':
-                case '1': if (last_c=='0' || last_c=='1'){
+                case '1':
+                case '3':
+                case '4': if (last_c!='2'){
                             System.out.println("E");
                             return;
                         }
@@ -73,9 +75,6 @@ public class opg {
                             System.out.println("RE");
                             return;
                         }
-                        break;
-                case '3':
-                case '4':
                         break;
                 default:
                         System.out.println("E");
