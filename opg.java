@@ -59,13 +59,13 @@ public class opg {
             //排除序列中不应相同的字符情况
             switch (c){
                 case '2': if (last_c=='2'){
-                            System.out.println("E1");
+                            System.out.println("E");
                             return;
                         }
                         break;
                 case '0':
                 case '1': if (last_c!='2' && last_c!='3'){
-                            System.out.println("E2");
+                            System.out.println("E");
                             return;
                         }
                         break;
@@ -75,17 +75,17 @@ public class opg {
                         }
                         break;
                 case '3': if (last_c=='4' || last_c=='2') {
-                            System.out.println("E3");
+                            System.out.println("E");
                             return;
                         }
                         break;
                 case '4': if (last_c!='2'){
-                            System.out.println("E4");
+                            System.out.println("RE");
                             return;
                         }
                         break;
                 default:
-                        System.out.println("E5");
+                        System.out.println("E");
                         return;
             }
 
@@ -93,7 +93,7 @@ public class opg {
 
             //如果没有运算数且是运算符的话
             if (OPND.empty() && !OPTR.empty() && c!='2' && c!='3'){
-                System.out.println("E6");
+                System.out.println("E");
                 return;
             }
             if (OPTR.empty()){
@@ -152,7 +152,7 @@ public class opg {
             }
             //读入到一些奇怪的情况了诶
             else {
-                System.out.println("E7");
+                System.out.println("E");
                 return;
             }
         }
