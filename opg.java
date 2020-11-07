@@ -52,6 +52,10 @@ public class opg {
 
             c = getChar(sentence, location);
 
+            if (last_c=='2' && c!='2' && c!='('){
+                System.out.println("R");
+            }
+
             //排除序列中不应相同的字符情况
             switch (c){
                 case '2': if (last_c=='2'){
@@ -66,97 +70,77 @@ public class opg {
                         }
                         break;
                 case '5': if (last_c=='0' || last_c=='1' || last_c=='3'){
-                            System.out.println("E");
+                            System.out.println("RE");
                             return;
                         }
             }
 
             //进行真正的分析算法
-            switch (c){
-                case '2':
-                    OPND.add(c);
-                    printSymbol(c);
-                    System.out.println("R");
-                    last_c = c;
-                    break;
-                case '0':
-                case '1':
-                case '3':
-                case '4':
-                case '5':
-                    //如果没有运算数的话
-                    if (OPND.empty() && !OPTR.empty()){
-                        System.out.println("E");
-                        return;
-                    }
-                    if (OPTR.empty()){
-                        last_c = c;
-                        OPTR.push(c);
-                        break;
-                    }
-                    //如果没有运算符的话
-                    if (OPTR.size()==1){
-                        OPTR.push(c);
-                        printSymbol(c);
-                        last_c = c;
-                        break;
-                    }
-                    //咱家里有运算符!
-                    else {
-                        char theta = OPTR.peek();
 
-                        //判断优先级
-                        int cmp = compare(theta,c);
-
-                        //cmp==1， 即栈内大于栈外的运算符的时候，需要重复循环，其他的不需要
-                        while (cmp==1){
-                            if (OPND.size()<2){
-                                System.out.println("RE");
-                                return;
-                            }
-
-                            char E1 = OPND.pop();
-                            char E2 = OPND.pop();
-                            theta = OPTR.pop();
-                            boolean transfer = statue(E1, theta, E2);
-                            if (transfer){
-                                OPND.push(E1);
-                                System.out.println("R");
-                            }
-                            else {
-                                System.out.println("RE");
-                                return;
-                            }
-
-                            theta = OPTR.peek();
-                            cmp = compare(theta,c);
-                        }
-                        //这时只能是左括号和右括号
-                        if (cmp == 0) {
-                            last_c = '2';//这时式子最右侧的还是运算数
-                            OPTR.pop();//把左括号扔出来
-                            printSymbol(c);
-                            System.out.println("R");
-                        }
-                        else if (cmp == -1) {
-                            OPTR.push(c);
-                            last_c = c;
-                            printSymbol(c);
-                        }
-                        //读到两个井号了！！！
-                        else if (cmp==-2){
-                            return;
-                        }
-                        //读入到一些奇怪的情况了诶
-                        else {
-                            System.out.println("E");
-                            return;
-                        }
-                    }
-                    break;
+            //如果没有运算数且是运算符的话
+            if (OPND.empty() && !OPTR.empty() && c!='2'){
+                System.out.println("E");
+                return;
             }
+            if (OPTR.empty()){
+                last_c = c;
+                OPTR.push(c);
+                continue;
+            }
+            char theta = OPTR.peek();
 
+            //判断优先级
+            int cmp = compare(theta,c);
 
+            //cmp==1， 即栈内大于栈外的运算符的时候，需要重复循环，其他的不需要
+            while (cmp==1){
+                if (OPND.size()<2){
+                    System.out.println("RE");
+                    return;
+                }
+
+                char E1 = OPND.pop();
+                char E2 = OPND.pop();
+                theta = OPTR.pop();
+                boolean transfer = statue(E1, theta, E2);
+                if (transfer){
+                    OPND.push(E1);
+                    System.out.println("R");
+                }
+                else {
+                    System.out.println("RE");
+                    return;
+                }
+
+                theta = OPTR.peek();
+                cmp = compare(theta,c);
+            }
+            //这时只能是左括号和右括号
+            if (cmp == 0) {
+                last_c = '2';//这时式子最右侧的还是运算数
+                OPTR.pop();//把左括号扔出来
+                printSymbol(c);
+            }
+            else if (cmp == -1) {
+                if (c=='2'){
+                    OPND.push(c);
+                }
+                else{
+                    OPTR.push(c);
+                }
+
+                last_c = c;
+                printSymbol(c);
+            }
+            //读到两个井号了！！！
+            else if (cmp==-2){
+                return;
+            }
+            //读入到一些奇怪的情况了诶
+            else {
+                System.out.println("E");
+                return;
+            }
         }
 
 
