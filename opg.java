@@ -48,7 +48,7 @@ public class opg {
         char last_c = c;
 
 
-        while (true){
+        while (length>location){
 
             c = getChar(sentence, location);
 
